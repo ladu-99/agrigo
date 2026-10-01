@@ -1,0 +1,27 @@
+# AgriConnect - .gitignore
+
+# Local / OS junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+node_modules/
+
+# Environment secrets - never commit real DB credentials
+.env
+.env.*
+config/local.php
+
+# Runtime logs
+*.log
+
+# User-uploaded files are ephemeral and must not be committed.
+# Keep the folder structure, ignore the contents.
+backend/uploads/*
+!backend/uploads/README.md
+!backend/uploads/resources
+!backend/uploads/images
+!backend/uploads/documents
+!backend/uploads/products
+backend/uploads/**/*
+!backend/uploads/**/.gitkeep

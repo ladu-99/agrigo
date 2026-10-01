@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Opportunities</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .public-nav { background: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .public-nav .logo { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .public-nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .public-nav .nav-links a { color: var(--text-medium); font-weight: 500; }
+        .public-nav .nav-links a.btn-primary, .public-nav .nav-links a.btn-primary:hover { color: white; }
+        .page-banner { background: linear-gradient(135deg, #1b5e20, #4caf50); color: var(--secondary); padding: 3rem 2rem; text-align: center; }
+        .page-banner h1 { color: var(--secondary); }
+        .public-footer { background: #1b5e20; color: var(--secondary); padding: 2rem; text-align: center; }
+        .public-footer a { color: var(--secondary); margin: 0 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="public-nav">
+        <div class="logo">AgriConnect</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="opportunities.html">Opportunities</a>
+            <a href="marketplace.html">Marketplace</a>
+            <a href="success-stories.html">Stories</a>
+            <a href="fields.html">Fields</a>
+            <a href="about.html">About</a>
+            <a href="../admin/login.html" class="btn btn-primary btn-sm">Login</a>
+        </div>
+    </nav>
+    <section class="page-banner">
+        <h1>Opportunities</h1>
+        <p>Funding, training, and grants from Government, NGOs, and Investors</p>
+    </section>
+    <div style="max-width:1000px; margin:0 auto; padding:2rem;" id="opp-container"><div class="spinner"></div></div>
+    <footer class="public-footer">
+        <p>&copy; 2026 AgriConnect - South Sudan Agricultural Platform</p>
+        <div style="margin-top:0.5rem;"><a href="about.html">About</a><a href="contact.html">Contact</a></div>
+    </footer>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        async function loadOpportunities() {
+            const data = await API.get('../../backend/api/public/opportunities.php');
+            const container = document.getElementById('opp-container');
+            if (!data || !data.opportunities || data.opportunities.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No active opportunities at the moment.</p></div>';
+                return;
+            }
+            let html = '';
+            data.opportunities.forEach(function(opp) {
+                const sourceClass = opp.source === 'government' ? 'badge-primary' : (opp.source === 'ngo' ? 'badge-info' : 'badge-warning');
+                html += '<div class="card">';
+                html += '<div class="d-flex justify-between align-center">';
+                html += '<h3>' + esc(opp.title) + '</h3>';
+                html += '<span class="badge ' + sourceClass + '">' + esc(opp.source) + '</span>';
+                html += '</div>';
+                html += '<p>' + esc(opp.description) + '</p>';
+                html += '<div class="d-flex gap-2 mt-1" style="flex-wrap:wrap;">';
+                html += '<span class="badge badge-info">' + esc(opp.type) + '</span>';
+                if (opp.deadline) html += '<span class="text-muted" style="font-size:0.85rem;">Deadline: ' + UI.formatDate(opp.deadline) + '</span>';
+                html += '</div>';
+                if (opp.contact_info) html += '<p class="mt-1" style="font-size:0.85rem;"><strong>Contact:</strong> ' + esc(opp.contact_info) + '</p>';
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        }
+        function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        loadOpportunities();
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Agricultural Fields</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .public-nav { background: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .public-nav .logo { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .public-nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .public-nav .nav-links a { color: var(--text-medium); font-weight: 500; }
+        .public-nav .nav-links a.btn-primary, .public-nav .nav-links a.btn-primary:hover { color: white; }
+        .page-banner { background: linear-gradient(135deg, #1b5e20, #4caf50); color: var(--secondary); padding: 3rem 2rem; text-align: center; }
+        .page-banner h1 { color: var(--secondary); }
+        .public-footer { background: #1b5e20; color: var(--secondary); padding: 2rem; text-align: center; }
+        .public-footer a { color: var(--secondary); margin: 0 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="public-nav">
+        <div class="logo">AgriConnect</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="opportunities.html">Opportunities</a>
+            <a href="marketplace.html">Marketplace</a>
+            <a href="success-stories.html">Stories</a>
+            <a href="fields.html">Fields</a>
+            <a href="about.html">About</a>
+            <a href="../admin/login.html" class="btn btn-primary btn-sm">Login</a>
+        </div>
+    </nav>
+    <section class="page-banner"><h1>Agricultural Fields & Activities</h1><p>Explore farms and agricultural activities across South Sudan</p></section>
+    <div style="max-width:1200px; margin:0 auto; padding:2rem;" id="fields-container"><div class="spinner"></div></div>
+    <footer class="public-footer">
+        <p>&copy; 2026 AgriConnect</p>
+        <div style="margin-top:0.5rem;"><a href="about.html">About</a><a href="contact.html">Contact</a></div>
+    </footer>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        async function loadFields() {
+            const data = await API.get('../../backend/api/public/fields.php');
+            const container = document.getElementById('fields-container');
+            if (!data || !data.fields || data.fields.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No agricultural fields listed yet.</p></div>';
+                return;
+            }
+            let html = '<div class="grid-3">';
+            data.fields.forEach(function(f) {
+                html += '<div class="card">';
+                html += '<h3>' + esc(f.name) + '</h3>';
+                html += '<p class="text-muted" style="font-size:0.85rem;">&#128205; ' + esc(f.location_name || '') + '</p>';
+                if (f.crop_type) html += '<p><strong>Crop:</strong> ' + esc(f.crop_type) + '</p>';
+                if (f.size) html += '<p><strong>Size:</strong> ' + f.size + ' ' + (f.size_unit || 'acres') + '</p>';
+                if (f.activity_description) html += '<p style="font-size:0.9rem;">' + esc(f.activity_description) + '</p>';
+                html += '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        loadFields();
+    </script>
+</body>
+</html>

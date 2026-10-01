@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Contact</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .public-nav { background: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .public-nav .logo { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .public-nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .public-nav .nav-links a { color: var(--text-medium); font-weight: 500; }
+        .public-nav .nav-links a.btn-primary, .public-nav .nav-links a.btn-primary:hover { color: white; }
+        .page-banner { background: linear-gradient(135deg, #1b5e20, #4caf50); color: var(--secondary); padding: 3rem 2rem; text-align: center; }
+        .page-banner h1 { color: var(--secondary); }
+        .public-footer { background: #1b5e20; color: var(--secondary); padding: 2rem; text-align: center; }
+        .public-footer a { color: var(--secondary); margin: 0 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="public-nav">
+        <div class="logo">AgriConnect</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="opportunities.html">Opportunities</a>
+            <a href="marketplace.html">Marketplace</a>
+            <a href="success-stories.html">Stories</a>
+            <a href="fields.html">Fields</a>
+            <a href="about.html">About</a>
+            <a href="../admin/login.html" class="btn btn-primary btn-sm">Login</a>
+        </div>
+    </nav>
+    <section class="page-banner"><h1>Contact Us</h1></section>
+    <div style="max-width:700px; margin:0 auto; padding:3rem 2rem;">
+        <div class="card">
+            <h2>Get in Touch</h2>
+            <p>Have questions about AgriConnect? Want to partner with us? Reach out using the form below or contact us directly.</p>
+            <form id="contact-form">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="e.g., 0920000000">
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" class="form-control" rows="5" required></textarea>
+                </div>
+                <div id="contact-status" style="margin-bottom:0.75rem; font-size:0.9rem;"></div>
+                <button type="submit" id="contact-submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+        <div class="card">
+            <h2>Contact Information</h2>
+            <p><strong>Email:</strong> info@agriconnect.ss</p>
+            <p><strong>Phone:</strong> +211-123-456-789</p>
+            <p><strong>Location:</strong> Juba, Central Equatoria, South Sudan</p>
+        </div>
+    </div>
+    <footer class="public-footer">
+        <p>&copy; 2026 AgriConnect</p>
+        <div style="margin-top:0.5rem;"><a href="about.html">About</a><a href="index.html">Home</a></div>
+    </footer>
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const status = document.getElementById('contact-status');
+            const btn = document.getElementById('contact-submit');
+            const payload = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                subject: document.getElementById('subject').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+            btn.disabled = true; btn.textContent = 'Sending...';
+            status.innerHTML = '';
+            try {
+                const res = await fetch('../../backend/api/public/contact.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data && data.success) {
+                    status.innerHTML = '<span style="color:var(--primary,#2e7d32);">' + (data.message || 'Message sent!') + '</span>';
+                    this.reset();
+                } else {
+                    status.innerHTML = '<span style="color:#c62828;">' + ((data && data.error) || 'Could not send message. Please try again.') + '</span>';
+                }
+            } catch (err) {
+                status.innerHTML = '<span style="color:#c62828;">Network error. Please try again.</span>';
+            } finally {
+                btn.disabled = false; btn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>

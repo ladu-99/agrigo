@@ -1,0 +1,16 @@
+# AgriConnect - root .htaccess (Apache, document root = repository root)
+# Prevents directory listings and sends bare-domain traffic to the public site.
+
+Options -Indexes
+DirectoryIndex index.html index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # "/" and "" -> public landing page
+    RewriteRule ^$ /frontend/public/index.html [L,R=302]
+</IfModule>
+
+# Never expose raw config / dump files at the web root.
+<FilesMatch "\.(ini|log|sql|md)$">
+    Require all denied
+</FilesMatch>

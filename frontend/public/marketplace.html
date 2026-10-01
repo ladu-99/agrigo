@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .public-nav { background: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .public-nav .logo { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .public-nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .public-nav .nav-links a { color: var(--text-medium); font-weight: 500; }
+        .public-nav .nav-links a.btn-primary, .public-nav .nav-links a.btn-primary:hover { color: white; }
+        .public-nav .nav-links a:hover { color: var(--primary); }
+        .page-banner { background: linear-gradient(135deg, #1b5e20, #4caf50); color: var(--secondary); padding: 3rem 2rem; text-align: center; }
+        .page-banner h1 { color: var(--secondary); }
+        .page-banner p { color: var(--secondary); }
+        .public-footer { background: #1b5e20; color: var(--secondary); padding: 2rem; text-align: center; }
+        .public-footer a { color: var(--secondary); margin: 0 1rem; }
+        .market-filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .market-filters .form-control { width: 100%; }
+        .results-count { color: var(--text-medium); font-size: 0.9rem; margin-bottom: 1rem; }
+        .product-card .btn { width: 100%; margin-top: 0.6rem; }
+        .inquiry-status { margin-top: 0.5rem; font-size: 0.9rem; }
+        @media (max-width: 768px) { .market-filters { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="public-nav">
+        <div class="logo">AgriConnect</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="opportunities.html">Opportunities</a>
+            <a href="marketplace.html">Marketplace</a>
+            <a href="success-stories.html">Stories</a>
+            <a href="fields.html">Fields</a>
+            <a href="about.html">About</a>
+            <a href="../admin/login.html" class="btn btn-primary btn-sm">Login</a>
+        </div>
+    </nav>
+
+    <section class="page-banner">
+        <h1>Agricultural Marketplace</h1>
+        <p>Browse agricultural products from farmers across South Sudan. Prices in SSP.</p>
+    </section>
+
+    <div style="max-width:1200px; margin:0 auto; padding:2rem;">
+        <div class="market-filters">
+            <input type="search" id="filter-search" class="form-control" placeholder="Search products..." oninput="debounceLoad()">
+            <select id="filter-type" class="form-control" onchange="loadProducts()">
+                <option value="">All Categories</option>
+                <option value="crop">Crops</option>
+                <option value="grain">Grains</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="livestock">Livestock</option>
+                <option value="dairy">Dairy</option>
+                <option value="fish">Fish</option>
+                <option value="other">Other</option>
+            </select>
+            <select id="filter-location" class="form-control" onchange="loadProducts()">
+                <option value="">All Locations</option>
+            </select>
+            <select id="sort" class="form-control" onchange="loadProducts()">
+                <option value="newest">Newest First</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="name_asc">Name: A-Z</option>
+                <option value="name_desc">Name: Z-A</option>
+            </select>
+        </div>
+        <div id="results-count" class="results-count"></div>
+        <div id="products-container"><div class="spinner"></div></div>
+    </div>
+
+    <!-- Inquiry Modal -->
+    <div class="modal-overlay" id="inquiry-modal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3>Inquire to Buy</h3>
+                <button class="modal-close" onclick="closeInquiryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="inquiry-listing-id">
+                <div class="card" style="background:#f8f9fa; margin-bottom:1rem;">
+                    <div style="font-weight:600;" id="inquiry-product-name">-</div>
+                    <div class="text-muted" style="font-size:0.85rem;" id="inquiry-product-info">-</div>
+                </div>
+                <p class="text-muted" style="font-size:0.85rem; margin-bottom:1rem;">Send your request to the seller. They will contact you by call or WhatsApp.</p>
+                <div class="form-group">
+                    <label for="inquiry-name">Your Name *</label>
+                    <input type="text" id="inquiry-name" class="form-control" placeholder="e.g., John Maube" required>
+                </div>
+                <div class="form-group">
+                    <label for="inquiry-phone">Phone (call / WhatsApp) *</label>
+                    <input type="tel" id="inquiry-phone" class="form-control" placeholder="e.g., 0920000000 or +211920000000" required>
+                </div>
+                <div class="form-group">
+                    <label for="inquiry-email">Email (optional)</label>
+                    <input type="email" id="inquiry-email" class="form-control" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="inquiry-qty">Quantity Interested In</label>
+                    <input type="number" id="inquiry-qty" class="form-control" placeholder="e.g., 50" min="0.01" step="0.01">
+                    <small class="text-muted" id="inquiry-qty-hint"></small>
+                </div>
+                <div class="form-group">
+                    <label for="inquiry-message">Message</label>
+                    <textarea id="inquiry-message" class="form-control" rows="2" placeholder="Anything the seller should know..."></textarea>
+                </div>
+                <div id="inquiry-result" class="inquiry-status"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeInquiryModal()">Cancel</button>
+                <button class="btn btn-primary" id="inquiry-submit" onclick="submitInquiry()">Send Inquiry</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="public-footer">
+        <p>&copy; 2026 AgriConnect - South Sudan Agricultural Platform</p>
+        <div style="margin-top:0.5rem;">
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="opportunities.html">Opportunities</a>
+        </div>
+    </footer>
+
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        let productsCache = [];
+        let debounceTimer = null;
+
+        function debounceLoad() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(loadProducts, 400);
+        }
+
+        function buildUrl() {
+            const type = document.getElementById('filter-type').value;
+            const location = document.getElementById('filter-location').value;
+            const sort = document.getElementById('sort').value;
+            const search = document.getElementById('filter-search').value.trim();
+            const p = new URLSearchParams();
+            if (type) p.set('type', type);
+            if (location) p.set('location_id', location);
+            if (sort) p.set('sort', sort);
+            if (search) p.set('search', search);
+            const qs = p.toString();
+            return '../../backend/api/public/marketplace.php' + (qs ? '?' + qs : '');
+        }
+
+        function populateLocations(locations) {
+            const sel = document.getElementById('filter-location');
+            const current = sel.value;
+            sel.innerHTML = '<option value="">All Locations</option>';
+            (locations || []).forEach(function(loc) {
+                const opt = document.createElement('option');
+                opt.value = loc.id;
+                opt.textContent = loc.name;
+                sel.appendChild(opt);
+            });
+            sel.value = current;
+            if (sel.value !== current) sel.value = '';
+        }
+
+        async function loadProducts() {
+            const container = document.getElementById('products-container');
+            const countEl = document.getElementById('results-count');
+            const data = await API.get(buildUrl());
+
+            if (data && data.locations) populateLocations(data.locations);
+
+            if (!data || !data.listings || data.listings.length === 0) {
+                countEl.textContent = '';
+                container.innerHTML = '<div class="empty-state"><p>No products match your filters.</p></div>';
+                return;
+            }
+
+            productsCache = data.listings;
+            countEl.textContent = data.listings.length + ' product' + (data.listings.length === 1 ? '' : 's') + ' available';
+
+            let html = '<div class="grid-3">';
+            data.listings.forEach(function(item) {
+                const photoSrc = item.product_photo ? '../../backend/uploads/' + item.product_photo : '';
+                const canBuy = Number(item.quantity) > 0;
+                html += '<div class="product-card">';
+                if (photoSrc) {
+                    html += '<img class="product-image" src="' + esc(photoSrc) + '" alt="' + esc(item.product_name) + '" onerror="this.style.display=\'none\'">';
+                } else {
+                    html += '<div class="product-image" style="display:flex; align-items:center; justify-content:center; color:var(--text-light); font-size:3rem;">&#127806;</div>';
+                }
+                html += '<div class="product-info">';
+                html += '<div class="product-name">' + esc(item.product_name) + '</div>';
+                if (item.description) html += '<p style="font-size:0.85rem; color:var(--text-medium); margin-bottom:0.3rem;">' + esc(item.description.substring(0, 80)) + '</p>';
+                html += '<div class="product-price">' + formatSSP(item.price_ssp) + ' <span class="currency">SSP</span></div>';
+                html += '<div class="product-meta"><span>Qty: ' + item.quantity + ' ' + esc(item.quantity_unit) + '</span><span>' + esc(item.product_type) + '</span></div>';
+                html += '<div class="product-meta"><span>&#128205; ' + esc(item.location_name || 'South Sudan') + '</span><span>' + esc(item.seller_type || '') + '</span></div>';
+                if (canBuy) {
+                    html += '<button class="btn btn-primary btn-sm" onclick="openInquiryModal(' + item.id + ')">Inquire to Buy</button>';
+                } else {
+                    html += '<button class="btn btn-outline btn-sm" disabled>Out of Stock</button>';
+                }
+                html += '</div></div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function openInquiryModal(listingId) {
+            const item = productsCache.find(function(l) { return String(l.id) === String(listingId); });
+            if (!item) return;
+            document.getElementById('inquiry-listing-id').value = item.id;
+            document.getElementById('inquiry-product-name').textContent = item.product_name;
+            document.getElementById('inquiry-product-info').textContent = 'Price: ' + formatSSP(item.price_ssp) + ' SSP  •  Available: ' + item.quantity + ' ' + item.quantity_unit;
+            document.getElementById('inquiry-qty').max = item.quantity;
+            document.getElementById('inquiry-qty-hint').textContent = 'Available: ' + item.quantity + ' ' + item.quantity_unit;
+            document.getElementById('inquiry-name').value = '';
+            document.getElementById('inquiry-phone').value = '';
+            document.getElementById('inquiry-email').value = '';
+            document.getElementById('inquiry-qty').value = '';
+            document.getElementById('inquiry-message').value = '';
+            document.getElementById('inquiry-result').innerHTML = '';
+            document.getElementById('inquiry-submit').disabled = false;
+            UI.toggleModal('inquiry-modal', true);
+        }
+
+        function closeInquiryModal() {
+            UI.toggleModal('inquiry-modal', false);
+        }
+
+        async function submitInquiry() {
+            const listingId = document.getElementById('inquiry-listing-id').value;
+            const name = document.getElementById('inquiry-name').value.trim();
+            const phone = document.getElementById('inquiry-phone').value.trim();
+            const email = document.getElementById('inquiry-email').value.trim();
+            const qty = document.getElementById('inquiry-qty').value;
+            const message = document.getElementById('inquiry-message').value.trim();
+            const result = document.getElementById('inquiry-result');
+
+            if (!name || !phone) {
+                result.innerHTML = '<span style="color:var(--danger,#c62828);">Please enter your name and phone number.</span>';
+                return;
+            }
+
+            const btn = document.getElementById('inquiry-submit');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            const data = await API.post('../../backend/api/public/inquire.php', {
+                listing_id: listingId,
+                buyer_name: name,
+                buyer_phone: phone,
+                buyer_email: email,
+                quantity_wanted: qty,
+                message: message
+            });
+
+            btn.textContent = 'Send Inquiry';
+            if (data && data.success) {
+                result.innerHTML = '<span style="color:var(--primary,#2e7d32);">' + esc(data.message || 'Inquiry sent!') + '</span>';
+                btn.disabled = true;
+                setTimeout(closeInquiryModal, 2500);
+            } else {
+                btn.disabled = false;
+                result.innerHTML = '<span style="color:var(--danger,#c62828);">' + esc((data && data.error) || 'Could not send inquiry. Please try again.') + '</span>';
+            }
+        }
+
+        function formatSSP(amount) { return new Intl.NumberFormat('en-SS').format(amount); }
+        function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        loadProducts();
+    </script>
+</body>
+</html>

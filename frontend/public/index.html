@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - South Sudan Agricultural Platform</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .public-nav {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .public-nav .logo { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .public-nav .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .public-nav .nav-links a { color: var(--text-medium); font-weight: 500; }
+        .public-nav .nav-links a.btn-primary, .public-nav .nav-links a.btn-primary:hover { color: white; }
+        .public-nav .nav-links a:hover { color: var(--primary); }
+        .hero {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #4caf50 100%);
+            color: var(--secondary);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        .hero h1 { color: var(--secondary); font-size: 2.8rem; margin-bottom: 1rem; }
+        .hero p { color: var(--secondary); font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem; }
+        .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 2rem; flex-wrap: wrap; }
+        .hero-stat { text-align: center; }
+        .hero-stat h3 { color: var(--secondary); font-size: 2rem; }
+        .hero-stat p { color: var(--secondary); font-size: 0.9rem; margin: 0; }
+        .section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 2.5rem; }
+        .section-title h2 { font-size: 2rem; color: var(--text-dark); }
+        .section-title p { color: var(--text-medium); max-width: 600px; margin: 0.5rem auto 0; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .feature-card { background: white; padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); text-align: center; transition: var(--transition); }
+        .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .feature-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .public-footer { background: #1b5e20; color: var(--secondary); padding: 3rem 2rem; text-align: center; }
+        .public-footer a { color: var(--secondary); }
+        .public-footer p { color: var(--secondary); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero-stats { gap: 1.5rem; }
+            .public-nav .nav-links { gap: 0.8rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="public-nav">
+        <div class="logo">AgriConnect</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="opportunities.html">Opportunities</a>
+            <a href="marketplace.html">Marketplace</a>
+            <a href="success-stories.html">Stories</a>
+            <a href="fields.html">Fields</a>
+            <a href="about.html">About</a>
+            <a href="../login.php" class="btn btn-primary btn-sm">Login</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Empowering South Sudan's Agriculture</h1>
+        <p>Connecting farmers, extension officers, investors, and communities to build a food-secure South Sudan. Access market information, learning resources, and agricultural opportunities.</p>
+        <div class="d-flex gap-2" style="justify-content:center; flex-wrap:wrap;">
+            <a href="marketplace.html" class="btn btn-secondary btn-lg">Browse Marketplace</a>
+            <a href="opportunities.html" class="btn btn-lg" style="background:white; color:var(--primary);">View Opportunities</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <h3 id="stat-farmers">10+</h3>
+                <p>Registered Farmers</p>
+            </div>
+            <div class="hero-stat">
+                <h3 id="stat-products">6+</h3>
+                <p>Market Products</p>
+            </div>
+            <div class="hero-stat">
+                <h3 id="stat-opportunities">4+</h3>
+                <p>Active Opportunities</p>
+            </div>
+            <div class="hero-stat">
+                <h3>10</h3>
+                <p>States Covered</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="section-title">
+            <h2>What AgriConnect Offers</h2>
+            <p>A comprehensive platform connecting all stakeholders in South Sudan's agricultural sector</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">&#127806;</div>
+                <h3>Marketplace</h3>
+                <p>Browse agricultural products from farmers across South Sudan. See prices in SSP, quantities available, and connect with sellers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">&#128218;</div>
+                <h3>Learning Resources</h3>
+                <p>Access videos and documents from extension officers on best farming practices, pest management, and modern techniques.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">&#128176;</div>
+                <h3>Opportunities</h3>
+                <p>Find funding, training, and grant opportunities from government, NGOs, and investors supporting agriculture in South Sudan.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">&#128200;</div>
+                <h3>Market Trends</h3>
+                <p>Stay informed with the latest commodity prices and market trends updated by extension officers across the country.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">&#127793;</div>
+                <h3>Agricultural Fields</h3>
+                <p>Explore farms and agricultural activities happening across South Sudan. See what's growing in your area and beyond.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">&#129309;</div>
+                <h3>Success Stories</h3>
+                <p>Read inspiring stories from farmers who have transformed their agricultural practices and achieved success.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="background: var(--bg-light); padding: 4rem 2rem; text-align: center;">
+        <h2>Are You a Farmer in South Sudan?</h2>
+        <p style="max-width:600px; margin:0.5rem auto 1.5rem; color:var(--text-medium);">
+            Register on AgriConnect to receive market updates, learning resources from extension officers, and connect with buyers and cooperatives.
+        </p>
+        <a href="../login.php" class="btn btn-primary btn-lg">Get Started - Login Here</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="public-footer">
+        <h3 style="color:white; margin-bottom:0.5rem;">AgriConnect</h3>
+        <p>South Sudan Agricultural Platform</p>
+        <p style="margin-top:1rem;">Empowering farmers, connecting communities, building food security.</p>
+        <div style="margin-top:1.5rem;">
+            <a href="about.html" style="margin:0 1rem;">About</a>
+            <a href="contact.html" style="margin:0 1rem;">Contact</a>
+            <a href="opportunities.html" style="margin:0 1rem;">Opportunities</a>
+            <a href="marketplace.html" style="margin:0 1rem;">Marketplace</a>
+        </div>
+        <p style="margin-top:2rem; font-size:0.8rem;">&copy; 2026 AgriConnect. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Load stats from API (public endpoints)
+        async function loadStats() {
+            try {
+                const data = await fetch('../../backend/api/public/marketplace.php');
+                const json = await data.json();
+                if (json && json.listings) {
+                    document.getElementById('stat-products').textContent = json.listings.length + '+';
+                }
+            } catch(e) { console.log('Stats loading skipped'); }
+        }
+        loadStats();
+    </script>
+</body>
+</html>
