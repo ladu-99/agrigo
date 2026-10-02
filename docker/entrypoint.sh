@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Render forwards inbound traffic to the port in $PORT (default 10000).
+# Use the hosting environment's assigned port, or 10000 by default.
 # Apache ships listening on 80, so rebind both ports.conf and our vhost.
 PORT="${PORT:-10000}"
 
@@ -9,8 +9,7 @@ sed -i "s/^\(Listen \)80$/\1${PORT}/" /etc/apache2/ports.conf 2>/dev/null || tru
 sed -i "s/^\(Listen \)\[::\]:80$/\1[::]:${PORT}/" /etc/apache2/ports.conf 2>/dev/null || true
 sed -i "s/__PORT__/${PORT}/g" /etc/apache2/sites-available/000-default.conf
 
-# A Render persistent disk (if attached) mounts an empty backend/uploads owned
-# by root, so make sure the web user can write to it before serving traffic.
+# Ensure the web user can write to uploaded files before serving traffic.
 UPLOADS="/var/www/html/backend/uploads"
 if [ -d "$UPLOADS" ]; then
     mkdir -p "$UPLOADS/resources" "$UPLOADS/images" "$UPLOADS/documents" "$UPLOADS/products"

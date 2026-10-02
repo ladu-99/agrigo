@@ -4,8 +4,7 @@
  * MySQL PDO connection singleton
  *
  * Credentials are read from environment variables so the same code runs
- * locally (falls back to the original defaults) and on hosted environments
- * such as Render (paste DB_HOST / DB_NAME / DB_USER / DB_PASS in the dashboard).
+ * locally (falls back to the original defaults) and on hosted environments.
  *
  * Optional TLS (required by most managed MySQL providers):
  *   DB_SSL_CA                  path or PEM contents of the CA certificate

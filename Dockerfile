@@ -1,4 +1,4 @@
-# AgriConnect - Render.com (Docker) runtime
+# AgriConnect - Docker runtime
 # Apache + PHP preserves the app's existing relative paths
 # (../../backend/api/..., ../../backend/uploads/...) and .htaccess rewrites,
 # because the document root is the repository root.
@@ -18,8 +18,8 @@ COPY docker/entrypoint.sh /usr/local/bin/agriconnect-entrypoint.sh
 RUN chmod +x /usr/local/bin/agriconnect-entrypoint.sh
 
 # --- Application source ---------------------------------------------------
-# Render clones the repo and builds this image; the whole project (frontend +
-# backend + database) becomes the document root at /var/www/html.
+# The whole project (frontend + backend + database) becomes the document root
+# at /var/www/html.
 WORKDIR /var/www/html
 COPY . /var/www/html/
 
@@ -29,8 +29,7 @@ RUN mkdir -p backend/uploads/resources backend/uploads/images \
     && chown -R www-data:www-data backend/uploads \
     && find backend/uploads -type d -exec chmod 775 {} \;
 
-# Render forwards traffic to the port in $PORT (default 10000); the entrypoint
-# rewrites Apache's Listen/VirtualHost directives to match it.
+# The entrypoint rewrites Apache's Listen/VirtualHost directives to use $PORT.
 EXPOSE 10000
 
 ENTRYPOINT ["/usr/local/bin/agriconnect-entrypoint.sh"]
